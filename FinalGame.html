@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Final Project - Wordle</title>
+
+    <style>
+      .modal {
+        display: none; /* Hidden by default */
+        position: fixed;
+        z-index: 1; /* Sit on top */
+        padding-top: 100px; /* Location of the box */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0, 0, 0); /* Fallback color */
+        background-color: rgba(255, 255, 255, 0.4); /* Black w/ opacity */
+      }
+      .modal-content {
+        background-color: black;
+        color: white;
+        padding: 10px;
+        margin: auto;
+        border: 1px solid #888;
+        width: 80%;
+      }
+
+      .close {
+        color: #aaaaaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+      }
+      .close:hover,
+      .close:focus {
+        color: #000;
+        text-decoration: none;
+        cursor: pointer;
+      }
+
+      body {
+        background-color: white;
+        color: black;
+      }
+
+      .green {
+        background-color: green;
+      }
+
+      .yellow {
+        background-color: #c29f36;
+      }
+
+      .gray {
+        background-color: #5e615d;
+      }
+
+      .letter {
+        display: inline-block;
+        width: 18%;
+        text-align: center;
+        min-height: 5px;
+        padding: 15px 0px;
+        border: solid 1px black;
+      }
+      .row {
+        margin: 2px 0px;
+
+        padding: 0px;
+      }
+
+      .item1 {
+        grid-area: header;
+      }
+      .item2 {
+        grid-area: main;
+      }
+      .item3 {
+        grid-area: footer;
+      }
+
+      .grid-container {
+        display: grid;
+        grid-template-areas:
+          "header header header header header "
+          "main main main main main"
+          "footer footer footer footer footer ";
+        grid-gap: 10px;
+        padding: 5px;
+        border-color: black;
+        margin-top: 17%;
+      }
+
+      .grid-container > div {
+        border: 4px solid rgba(0, 0, 0, 0.8);
+        text-align: center;
+        padding: 15px;
+        font-size: 25px;
+        margin-right: 25%;
+        margin-left: 25%;
+      }
+      .keyboard {
+        margin-top: 20px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 5px;
+      }
+      .key {
+        padding: 10px 20px;
+        background-color: #d3d3d3;
+        border: 1px solid black;
+        font-size: 16px;
+        cursor: pointer;
+        border-radius: 5px;
+        text-transform: uppercase;
+      }
+      .key:hover {
+        background-color: #c0c0c0;
+      }
+      .key.action {
+        background-color: #f5a623;
+        font-weight: bold;
+      }
+      
+    </style>
+  </head>
+  <body onload="modal()">
+    <div class="grid-container">
+      <div class="item1">Wordle</div>
+
+      <div class="item2">
+        <div id="myModal" class="modal">
+          <div class="modal-content">
+            <span class="close">&times;</span>
+            <div>
+              <ul>
+                <li>Each guess must be a valid five-letter word.</li>
+                <li>
+                  The color of a tile will change to show you how close your
+                  guess was
+                </li>
+                <li>
+                  If the tile turns green, the letter is in the word, and it is
+                  in the correct spot. If the tile turns yellow, the letter is
+                  in the word, but it is not in the correct spot. If the tile
+                  turns gray, the letter is not in the word.
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="r1 row">
+          <span class="c1 letter" id="r1c1"></span>
+          <span class="c2 letter"></span>
+          <span class="c3 letter"></span>
+          <span class="c4 letter"></span>
+          <span class="c5 letter"></span>
+        </div>
+        <div class="r2 row">
+          <span class="c1 letter"></span>
+          <span class="c2 letter"></span>
+          <span class="c3 letter"></span>
+          <span class="c4 letter"></span>
+          <span class="c5 letter"></span>
+        </div>
+        <div class="r3 row">
+          <span class="c1 letter"></span>
+          <span class="c2 letter"></span>
+          <span class="c3 letter"></span>
+          <span class="c4 letter"></span>
+          <span class="c5 letter"></span>
+        </div>
+        <div class="r4 row">
+          <span class="c1 letter"></span>
+          <span class="c2 letter"></span>
+          <span class="c3 letter"></span>
+          <span class="c4 letter"></span>
+          <span class="c5 letter"></span>
+        </div>
+        <div class="r5 row">
+          <span class="c1 letter"></span>
+          <span class="c2 letter"></span>
+          <span class="c3 letter"></span>
+          <span class="c4 letter"></span>
+          <span class="c5 letter"></span>
+        </div>
+        <div class="r6 row">
+          <span class="c1 letter"></span>
+          <span class="c2 letter"></span>
+          <span class="c3 letter"></span>
+          <span class="c4 letter"></span>
+          <span class="c5 letter"></span>
+        </div>
+      </div>
+      
+      <div class="keyboard">
+          <button>&nbsp</button>
+          <button class="key">q</button>
+          <button class="key">w</button>
+          <button class="key">e</button>
+          <button class="key">r</button>
+          <button class="key">t</button>
+          <button class="key">y</button>
+          <button class="key">u</button>
+          <button class="key">i</button>
+          <button class="key">o</button>
+          <button class="key">p</button>
+          <button class="key">a</button>
+          <button class="key">s</button>
+          <button class="key">d</button>
+          <button class="key">f</button>
+          <button class="key">g</button>
+          <button class="key">h</button>
+          <button class="key">j</button>
+          <button class="key">k</button>
+          <button class="key">l</button>
+          <button class="key action">enter</button>
+          <button class="key">z</button>
+          <button class="key">x</button>
+          <button class="key">c</button>
+          <button class="key">v</button>
+          <button class="key">b</button>
+          <button class="key">n</button>
+          <button class="key">m</button>
+          <button class="key action">backspace</button>
+        </div>
+      
+    </div>
+  </body>
+
+  <script>
+    let chars = [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "G",
+      "H",
+      "I",
+      "J",
+      "K",
+      "L",
+      "M",
+      "N",
+      "O",
+      "P",
+      "Q",
+      "R",
+      "S",
+      "T",
+      "U",
+      "V",
+      "W",
+      "X",
+      "Y",
+      "Z",
+    ];
+
+    let Gword = " ";
+    let correctchoice;
+    let wordsGuessed = 0;
+    let currentLetter = 0;
+
+    var xhttps = new XMLHttpRequest();
+
+    xhttps.onreadystatechange = function () {
+      if (this.readyState == 4 && this.status == 200) {
+        // Typical action to be performed when the document is ready:
+        correctchoice = xhttps.responseText.toUpperCase();
+        correctchoice = correctchoice.split("\r\n");
+      }
+    };
+
+    xhttps.open(
+      "GET",
+      "https://docs.google.com/spreadsheets/d/e/2PACX-1vTnth31sIvw07GN4J5bVRnXtJFSB4sRIZOHhaL3Kpds1GnpHDPFXKnDLxmslYFpGLWpFarbEVfSMpdx/pub?output=csv",
+      true
+    );
+    xhttps.send();
+
+    var xhttp = new XMLHttpRequest();
+
+    xhttp.onreadystatechange = function () {
+      if (this.readyState == 4 && this.status == 200) {
+        // Typical action to be performed when the document is ready:
+        let wordchoice = xhttp.responseText.split("\r\n");
+        let word = wordchoice[Math.floor(Math.random() * wordchoice.length)];
+        Gword = word.toUpperCase();
+        //console.log(Gword)
+      }
+    };
+
+    xhttp.open(
+      "GET",
+      "https://docs.google.com/spreadsheets/d/e/2PACX-1vRNocXlgCxqTT11U4mCqEfd7C-PYrQDZhqS1quhiiYBN3k9OnzufyPxgShdukqN9ACNWZi03BRsNN57/pub?output=csv",
+      true
+    );
+    xhttp.send();
+
+    function modal() {
+      document.getElementById("myModal").style.display = "block";
+    }
+
+    let close = document.getElementsByClassName("close")[0];
+    close.onclick = function () {
+      document.getElementById("myModal").style.display = "none";
+      gamestart();
+    };
+
+    function gamestart() {
+      document.body.addEventListener("keydown", charin);
+    }
+
+    function charin(e) {
+      let guess = document.getElementsByClassName("row")[wordsGuessed];
+      let characterInput = e.key.toUpperCase();
+      let letters = guess.getElementsByClassName("letter");
+
+      if (chars.includes(characterInput) && currentLetter < 5) {
+        letters[currentLetter].innerText = characterInput;
+        currentLetter++;
+      }
+
+      if (e.key == "Enter" && currentLetter == 5) {
+        let userWord = getword();
+        if (lookupword(userWord) == false) {
+          return false;
+        }
+        checkword(userWord);
+        currentLetter = 0;
+        wordsGuessed++;
+      }
+
+      if (e.key == "Backspace" && letters[0].innerText != "") {
+        currentLetter = currentLetter - 1;
+        letters[currentLetter].innerText = "";
+      }
+    }
+
+    function getword() {
+      let guess = document.getElementsByClassName("row")[wordsGuessed];
+      let userWord = "";
+      for (i = 0; i < 5; i++) {
+        userWord = userWord + guess.children[i].innerText;
+      }
+      return userWord;
+    }
+
+    function lookupword(n) {
+      if (correctchoice.includes(n)) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    function checkword(n) {
+      let guess = document.getElementsByClassName("row")[wordsGuessed];
+      let gtemp = Gword.split("");
+      let utemp = n.split("");
+
+      for (i = 0; i < 5; i++) {
+        if (gtemp[i] == utemp[i]) {
+          guess.children[i].classList.add("green");
+          gtemp[i] = "";
+          utemp[i] = "";
+        }
+      }
+
+      for (i = 0; i < 5; i++) {
+        if (utemp[i] == "") {
+          continue;
+        }
+        let index = gtemp.indexOf(utemp[i]);
+        if (index != -1) {
+          guess.children[i].classList.add("yellow");
+          gtemp[index] = "";
+        } else {
+          guess.children[i].classList.add("gray");
+        }
+      }
+      if (Gword == n) {
+        document.getElementById("myModal").innerText =
+          "Congratulations, You Won!!!";
+        modal();
+      }
+
+      console.log(wordsGuessed, Gword, n);
+      if (wordsGuessed == 5 && Gword != n) {
+        document.getElementById("myModal").innerText =
+          "Sorry You Lost Try Again! " + "The word was " + Gword;
+        modal();
+      }
+    }
+    
+    document.querySelector(".keyboard").addEventListener("click", (event) => {
+      const key = event.target.innerText.toUpperCase();
+
+      if (key === "ENTER") {
+        document.body.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter" }));
+      } else if (key === "BACKSPACE") {
+        document.body.dispatchEvent(new KeyboardEvent("keydown", { key: "Backspace" }));
+      } else if (chars.includes(key)) {
+        document.body.dispatchEvent(new KeyboardEvent("keydown", { key: key }));
+      }
+    });
+  </script>
+</html>
